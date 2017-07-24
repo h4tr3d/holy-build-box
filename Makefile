@@ -1,4 +1,4 @@
-VERSION = 2.0.0-a4
+VERSION = 2.0.0
 MAJOR_VERSION = 2
 HUBUSER ?= alexd
 PROJECT ?= dyn-hbb
