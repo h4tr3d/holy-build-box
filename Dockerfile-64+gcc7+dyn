@@ -1,0 +1,153 @@
+FROM centos:6
+
+# Move build steps out of image directory
+ADD image /hbb_build
+
+# Copy build instruction, make it Docker cache friendly
+COPY build_steps_dyn/build-gcc7-core.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-core.sh
+
+COPY build_steps_dyn/build-gcc7-binutils.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-binutils.sh
+
+COPY build_steps_dyn/build-gcc7-gcc.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-gcc.sh
+
+COPY build_steps_dyn/build-gcc7-gcc-check.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-gcc-check.sh
+
+#
+# Additional tools installation
+#
+
+COPY build_steps_dyn/build-gcc7-pkg-config.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-pkg-config.sh
+
+COPY build_steps_dyn/build-gcc7-ccache.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-ccache.sh
+
+COPY build_steps_dyn/build-gcc7-cmake.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-cmake.sh
+
+#
+# Override some settings before lib installation:
+#  we use mix of statis and shared libraries, so
+#  we must compile with shlib profile only, but
+#  hardened variant is a good choose.
+#
+
+# Override common
+COPY build_steps_dyn/build-gcc7-common.sh /hbb_build/
+RUN sed -i 's|-fvisibility=hidden||' /hbb_build/activate_func.sh /hbb/activate_func.sh
+
+## Libs installation
+
+COPY build_steps_dyn/build-gcc7-bzip2.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-bzip2.sh
+
+COPY build_steps_dyn/build-gcc7-zlib.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-zlib.sh
+
+COPY build_steps_dyn/build-gcc7-openssl.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-openssl.sh
+
+COPY build_steps_dyn/build-gcc7-libcurl.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-libcurl.sh
+
+COPY build_steps_dyn/build-gcc7-sqlite.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-sqlite.sh
+
+#COPY build_steps_dyn/build-gcc7-boost.sh /hbb_build/
+#RUN bash /hbb_build/build-gcc7-boost.sh
+
+
+##
+
+# Additional applications:
+RUN yum install -y xz
+
+##
+
+COPY build_steps_dyn/build-gcc7-libpng.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-libpng.sh
+
+COPY build_steps_dyn/build-gcc7-freetype.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-freetype.sh
+
+COPY build_steps_dyn/build-gcc7-libffi.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-libffi.sh
+
+COPY build_steps_dyn/build-gcc7-pcre.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-pcre.sh
+
+COPY build_steps_dyn/build-gcc7-glib.sh /hbb_build/
+RUN yum install -y gettext
+RUN bash /hbb_build/build-gcc7-glib.sh
+
+COPY build_steps_dyn/build-gcc7-icu.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-icu.sh
+
+COPY build_steps_dyn/build-gcc7-harfbuzz.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-harfbuzz.sh
+
+# FreeType again after harfbuzz install
+COPY build_steps_dyn/build-gcc7-freetype.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-freetype.sh
+
+COPY build_steps_dyn/build-gcc7-expat.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-expat.sh
+
+COPY build_steps_dyn/build-gcc7-fontconfig.sh /hbb_build/
+RUN yum install -y gperf
+RUN bash /hbb_build/build-gcc7-fontconfig.sh
+
+##
+
+#
+# Qt5 building
+#
+COPY build_steps_dyn/build-gcc7-qt5-common.sh /hbb_build/
+
+COPY build_steps_dyn/build-gcc7-qt5-prepare.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-qt5-prepare.sh
+
+RUN yum install -y cups-devel gtk+-devel mesa-libGL-devel mesa-libEGL-devel mesa-libGLU-devel dbus-devel
+
+COPY build_steps_dyn/build-gcc7-qt5-build.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-qt5-build.sh
+
+#
+# Other stuff
+#
+COPY build_steps_dyn/build-gcc7-libzip.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-libzip.sh
+
+COPY build_steps_dyn/build-gcc7-libusb.sh /hbb_build/
+RUN yum install -y libudev-devel
+RUN bash /hbb_build/build-gcc7-libusb.sh
+RUN yum erase -y libudev-devel
+
+COPY build_steps_dyn/build-gcc7-ffmpeg.sh /hbb_build/
+RUN yum install -y yasm
+RUN bash /hbb_build/build-gcc7-ffmpeg.sh
+
+
+#
+# Deployment tools
+#
+COPY build_steps_dyn/build-gcc7-patchelf.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-patchelf.sh
+
+COPY build_steps_dyn/build-gcc7-linuxdeployqt.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-linuxdeployqt.sh
+
+# Override ICU with static linking with libgcc_s.so
+# It safe to replace current installation without rebuilding Qt.
+# TODO: in production Version move icu-2 to icu and remove lines below
+COPY build_steps_dyn/build-gcc7-icu-2.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-icu-2.sh
+
+# Clean up
+COPY build_steps_dyn/build-gcc7-finalize.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-finalize.sh
+

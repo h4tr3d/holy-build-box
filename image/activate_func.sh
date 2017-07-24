@@ -1,4 +1,4 @@
-SCL_COLLECTIONS=("devtoolset-4" "autotools-latest" "python27")
+SCL_COLLECTIONS=("devtoolset-6" "autotools-latest" "python27")
 function activate_scl() {
 	for mod in ${SCL_COLLECTIONS[@]}
 	do
@@ -11,8 +11,8 @@ function activate_holy_build_box_deps_installation_environment() {
 	export PATH=/hbb/bin:$PATH
 	export C_INCLUDE_PATH=/hbb/include
 	export CPLUS_INCLUDE_PATH=/hbb/include
-	export LIBRARY_PATH=/hbb/lib
-	export PKG_CONFIG_PATH=/hbb/lib/pkgconfig:/usr/lib/pkgconfig
+	export LIBRARY_PATH=/hbb/lib:/usr/lib64:${LIBRARY_PATH}
+	export PKG_CONFIG_PATH=/hbb/lib/pkgconfig:/usr/lib/pkgconfig:/usr/lib64/pkgconfig
 	export CPPFLAGS=-I/hbb/include
 	export LDPATHFLAGS="-L/hbb/lib -Wl,-rpath,/hbb/lib"
 	export LDFLAGS="$LDPATHFLAGS"
@@ -34,7 +34,7 @@ function activate_holy_build_box() {
 	export PATH=$PREFIX/bin:/hbb/bin:$PATH
 	export C_INCLUDE_PATH=$PREFIX/include
 	export CPLUS_INCLUDE_PATH=$PREFIX/include
-	export LIBRARY_PATH=$PREFIX/lib
+	export LIBRARY_PATH=$PREFIX/lib:/usr/lib64:${LIBRARY_PATH}
 	export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig:/usr/lib/pkgconfig
 	export LD_LIBRARY_PATH=/hbb/lib:$PREFIX/lib:${LD_LIBRARY_PATH}
 
