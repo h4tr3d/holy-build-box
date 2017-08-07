@@ -129,6 +129,9 @@ RUN bash /hbb_build/build-gcc7-libudev.sh
 COPY build_steps_dyn/build-gcc7-libusb.sh /hbb_build/
 RUN bash /hbb_build/build-gcc7-libusb.sh
 
+COPY build_steps_dyn/build-gcc7-hidapi.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-hidapi.sh
+
 #COPY build_steps_dyn/build-gcc7-ffmpeg.sh /hbb_build/
 #RUN yum install -y yasm
 #RUN bash /hbb_build/build-gcc7-ffmpeg.sh
