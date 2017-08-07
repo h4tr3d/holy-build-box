@@ -122,15 +122,16 @@ RUN bash /hbb_build/build-gcc7-qt5-build.sh
 COPY build_steps_dyn/build-gcc7-libzip.sh /hbb_build/
 RUN bash /hbb_build/build-gcc7-libzip.sh
 
+RUN yum install -y libxslt libxslt-devel
+COPY build_steps_dyn/build-gcc7-libudev.sh /hbb_build/
+RUN bash /hbb_build/build-gcc7-libudev.sh
+
 COPY build_steps_dyn/build-gcc7-libusb.sh /hbb_build/
-RUN yum install -y libudev-devel
 RUN bash /hbb_build/build-gcc7-libusb.sh
-RUN yum erase -y libudev-devel
 
-COPY build_steps_dyn/build-gcc7-ffmpeg.sh /hbb_build/
-RUN yum install -y yasm
-RUN bash /hbb_build/build-gcc7-ffmpeg.sh
-
+#COPY build_steps_dyn/build-gcc7-ffmpeg.sh /hbb_build/
+#RUN yum install -y yasm
+#RUN bash /hbb_build/build-gcc7-ffmpeg.sh
 
 #
 # Deployment tools
@@ -140,12 +141,6 @@ RUN bash /hbb_build/build-gcc7-patchelf.sh
 
 COPY build_steps_dyn/build-gcc7-linuxdeployqt.sh /hbb_build/
 RUN bash /hbb_build/build-gcc7-linuxdeployqt.sh
-
-# Override ICU with static linking with libgcc_s.so
-# It safe to replace current installation without rebuilding Qt.
-# TODO: in production Version move icu-2 to icu and remove lines below
-COPY build_steps_dyn/build-gcc7-icu-2.sh /hbb_build/
-RUN bash /hbb_build/build-gcc7-icu-2.sh
 
 # Clean up
 COPY build_steps_dyn/build-gcc7-finalize.sh /hbb_build/

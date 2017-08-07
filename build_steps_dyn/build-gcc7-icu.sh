@@ -32,6 +32,7 @@ function install_pkg()
 		source "$PREFIX/activate"
 		export CFLAGS="$SHLIB_CFLAGS"
 		export CXXFLAGS="$SHLIB_CFLAGS"
+		export LDFLAGS="$SHLIB_LDFLAGS -static-libgcc"
 		run patch -p1 -i icu4c-58.2-fix_enumeration-1.patch
 		cd source
 		run ./configure --prefix=$PREFIX \
