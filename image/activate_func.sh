@@ -1,4 +1,4 @@
-SCL_COLLECTIONS=("devtoolset-6" "autotools-latest" "python27")
+SCL_COLLECTIONS=("devtoolset-7" "autotools-latest" "python27")
 function activate_scl() {
 	for mod in ${SCL_COLLECTIONS[@]}
 	do

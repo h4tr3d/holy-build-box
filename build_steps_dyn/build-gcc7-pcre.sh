@@ -9,7 +9,7 @@ source /hbb_build/build-gcc7-common2.sh
 PKG_VERSION=8.40
 PKG_NAME=pcre
 PKG_TITLE=PCRE
-PKG_SOURCE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-$PKG_VERSION.tar.bz2
+PKG_SOURCE=https://ftp.pcre.org/pub/pcre/pcre-$PKG_VERSION.tar.bz2
 
 function install_pkg()
 {

@@ -64,11 +64,20 @@ header "Updating system"
 run touch /var/lib/rpm/*
 run rpm --rebuilddb
 
-run yum update -y
-run yum install -y curl epel-release centos-release-scl-rh
+#run yum update -y
+#run yum install -y curl epel-release centos-release-scl-rh
 
 # Enable autotools-latest EPEL
-run yum install -y https://www.softwarecollections.org/en/scls/praiskup/autotools/epel-6-${OSARCH}/download/praiskup-autotools-epel-6-${OSARCH}.noarch.rpm
+# ref: https://copr.fedorainfracloud.org/coprs/praiskup/autotools/
+# ref: http://woshub.com/install-configure-repos-centos-rhel/
+#run yum install -y https://www.softwarecollections.org/en/scls/praiskup/autotools/epel-6-${OSARCH}/download/praiskup-autotools-epel-6-${OSARCH}.noarch.rpm
+(
+    cd /etc/yum.repos.d
+    run wget -c https://copr.fedorainfracloud.org/coprs/praiskup/autotools/repo/epel-6/praiskup-autotools-epel-6.repo
+)
+
+run yum update -y
+run yum install -y curl epel-release centos-release-scl-rh
 
 header "Installing compiler toolchain"
 cd /

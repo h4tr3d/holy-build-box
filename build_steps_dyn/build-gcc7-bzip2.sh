@@ -15,7 +15,7 @@ function install_bzip2()
 	header "Installing bzip2 $BZIP2_VERSION static libraries: $VARIANT"
 	download_and_extract bzip2-$BZIP2_VERSION.tar.gz \
 		bzip2-$BZIP2_VERSION \
-		http://bzip.org/${BZIP2_VERSION}/bzip2-$BZIP2_VERSION.tar.gz
+		https://sourceware.org/pub/bzip2/bzip2-$BZIP2_VERSION.tar.gz
 
 	(
 		source "$PREFIX/activate"

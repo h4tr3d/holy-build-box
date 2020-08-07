@@ -6,11 +6,11 @@ source /hbb_build/build-gcc7-common2.sh
 
 #########################
 
-PKG_VERSION=58.2
-_PKG_VER2=58_2
+PKG_VERSION=58.3
+_PKG_VER2=58_3
 PKG_NAME=icu
 PKG_TITLE=ICU
-PKG_SOURCE=http://download.icu-project.org/files/icu4c/$PKG_VERSION/icu4c-${_PKG_VER2}-src.tgz
+PKG_SOURCE=https://github.com/unicode-org/icu/releases/download/release-${PKG_VERSION/./-}/icu4c-${PKG_VERSION/./_}-src.tgz
 PKG_SOURCE2=http://www.linuxfromscratch.org/patches/blfs/8.0/icu4c-58.2-fix_enumeration-1.patch
 
 function install_pkg()
@@ -25,7 +25,6 @@ function install_pkg()
 		$PKG_SOURCE
 
         # Get other sources
-	#wget $PKG_SOURCE2
 	run curl --fail -L -o icu4c-58.2-fix_enumeration-1.patch $PKG_SOURCE2
 
 	(

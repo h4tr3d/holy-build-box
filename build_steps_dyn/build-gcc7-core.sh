@@ -30,16 +30,27 @@ header "Updating system"
 run touch /var/lib/rpm/*
 run rpm --rebuilddb
 
-run yum update -y
-run yum install -y curl epel-release centos-release-scl-rh
+#run yum update -y
+#run yum install -y curl epel-release centos-release-scl-rh
 
 # Enable autotools-latest EPEL
-run yum install -y https://www.softwarecollections.org/en/scls/praiskup/autotools/epel-6-${OSARCH}/download/praiskup-autotools-epel-6-${OSARCH}.noarch.rpm
+# ref: https://copr.fedorainfracloud.org/coprs/praiskup/autotools/
+# ref: http://woshub.com/install-configure-repos-centos-rhel/
+#run yum install -y https://www.softwarecollections.org/en/scls/praiskup/autotools/epel-6-${OSARCH}/download/praiskup-autotools-epel-6-${OSARCH}.noarch.rpm
+(
+    cd /etc/yum.repos.d
+    #run wget -c https://copr.fedorainfracloud.org/coprs/praiskup/autotools/repo/epel-6/praiskup-autotools-epel-6.repo
+    run run curl --fail -L -o praiskup-autotools-epel-6.repo https://copr.fedorainfracloud.org/coprs/praiskup/autotools/repo/epel-6/praiskup-autotools-epel-6.repo
+)
+
+run yum update -y
+run yum install -y curl epel-release centos-release-scl-rh scl-utils
 
 header "Installing compiler toolchain"
 cd /
-run yum install -y devtoolset-6-gcc devtoolset-6-gcc-c++ \
-		devtoolset-6-binutils  make file diffutils \
+# Use devtoolset-7
+# ref: https://forums.centos.org/viewtopic.php?t=71663
+run yum install -y devtoolset-7-gcc devtoolset-7-gcc-c++ \
+		devtoolset-7-binutils devtoolset-7  make file diffutils \
 		patch perl bzip2 which gzip autotools-latest python27 \
 		bison git doxygen
-
